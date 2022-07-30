@@ -6,16 +6,7 @@ defmodule BBS.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      %{
-        id: BBS.MessageRepository,
-        start:
-          {GenServer, :start_link,
-           [
-             BBS.MessageRepository,
-             ["Welcome to My Bulletin Board!"],
-             [name: BBS.MessageRepository]
-           ]}
-      }
+      {BBS.MessageRepository, ["Welcome to My Bulletin Board!"]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

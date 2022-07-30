@@ -24,4 +24,12 @@ defmodule BBS.MessageRepository do
   def read_all() do
     GenServer.call(BBS.MessageRepository, :read_all)
   end
+
+  def start_link(messages) do
+    GenServer.start_link(
+      BBS.MessageRepository,
+      messages,
+      name: BBS.MessageRepository
+    )
+  end
 end
