@@ -1,34 +1,35 @@
 defmodule BBS.MessageRepository do
-  use GenServer
+  use Agent
 
   # Server
 
   def init(messages) do
-    {:ok, messages}
+    messages
   end
 
-  def handle_call({:post, message}, _from, messages) do
-    {:reply, :ok, [message | messages]}
+  def handle_post(messages, message) do
+    [message | messages]
   end
 
-  def handle_call(:read_all, _from, messages) do
-    {:reply, messages, messages}
+  def handle_read_all(messages) do
+    messages
   end
 
   # Client
 
   def post(message) do
-    GenServer.call(BBS.MessageRepository, {:post, message})
+    Agent.update(BBS.MessageRepository, BBS.MessageRepository, :handle_post, [message])
   end
 
   def read_all() do
-    GenServer.call(BBS.MessageRepository, :read_all)
+    Agent.get(BBS.MessageRepository, BBS.MessageRepository, :handle_read_all, [])
   end
 
   def start_link(messages) do
-    GenServer.start_link(
+    Agent.start_link(
       BBS.MessageRepository,
-      messages,
+      :init,
+      [messages],
       name: BBS.MessageRepository
     )
   end
